@@ -17,16 +17,22 @@ load_dotenv()
 st.title("DEMO Chatbot With Retrieval-Augmented Generation 🔎")
 
 # initialize pinecone database
-pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
+OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
+PINECONE_API_KEY = st.secrets.get("PINECONE_API_KEY", os.getenv("PINECONE_API_KEY"))
+PINECONE_INDEX_NAME = st.secrets.get("PINECONE_INDEX_NAME", os.getenv("PINECONE_INDEX_NAME"))
 
 # initialize pinecone database
-index_name = os.environ.get("PINECONE_INDEX_NAME")  
-index = pc.Index(index_name)
+pc = Pinecone(api_key=PINECONE_API_KEY)
+
+# initialize pinecone index
+index = pc.Index(PINECONE_INDEX_NAME)
 
 # initialize embeddings model + vector store
-embeddings = OpenAIEmbeddings(model="text-embedding-3-large", api_key=os.environ.get("OPENAI_API_KEY"))
+embeddings = OpenAIEmbeddings(
+    model="text-embedding-3-large",
+    api_key=OPENAI_API_KEY
+)
 vector_store = PineconeVectorStore(index=index, embedding=embeddings)
-
 # initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
