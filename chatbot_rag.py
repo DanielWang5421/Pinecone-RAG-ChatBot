@@ -105,19 +105,4 @@ Context: {context}:"""
     with st.chat_message("assistant"):
         st.markdown(result)
 
-        if docs:
-         citation_header = "\n\n**Sources used:**\n"
-         citations = []
-         for i, d in enumerate(docs):
-            meta = d.metadata if hasattr(d, "metadata") else {}
-            source = meta.get("source", f"Document {i+1}")
-            page = meta.get("page", None)
-            
-            if page is not None:
-                citations.append(f"- {source}, page {page}")
-            else:
-                citations.append(f"- {source}")
-
-        st.markdown(citation_header + "\n".join(citations))
-
     st.session_state.messages.append(AIMessage(result))
